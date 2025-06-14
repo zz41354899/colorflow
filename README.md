@@ -1,19 +1,20 @@
-# ✨ Vibe Name Generator
+# 🌈 Color Flow 視覺打點器
 
-產生你的 vibe 名字吧！這是一個簡單而有趣的動畫互動頁，使用者只需點擊按鈕，即可隨機獲得風格化的 vibe 名，配合漸變背景與文字動畫，讓每一次點擊都像儀式感啟動。
+一個視覺風格濃厚的互動網頁，用戶點擊色塊按鈕，網頁主題顏色與 Emoji 動畫即刻轉換，帶來色彩與情緒同步變化的感官體驗，極適合用於講座展示 GSAP 動畫。
 
+![preview](./preview.png)
 
 ## 🔧 使用方式
 
-1. 下載資料夾（`vibe-name-generator`）
-2. 直接打開 `index.html` 檔案即可使用
-3. 無需安裝任何函式庫，已經整合 CDN
+1. 下載此專案資料夾（`color-flow`）
+2. 打開 `index.html` 即可開始使用
+3. 不需安裝任何函式庫，Tailwind 與 GSAP 均透過 CDN 使用
 
 ## 🧪 技術架構
 
 - HTML + Tailwind CSS（CDN）
-- GSAP 動畫（CDN）
-- JavaScript 文字隨機 + 動畫切換邏輯
+- GSAP（CDN）
+- 點擊事件 + 動畫變化（JS 控制）
 
 ## 📄 授權 LICENSE
 
