@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Flow 視覺打點器</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <style>
+        /* 自定義過渡效果 */
+        .smooth-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* 自定義字體大小 */
+        .title-text {
+            font-size: clamp(3rem, 8vw, 6rem);
+        }
+        
+        /* 按鈕 hover 效果 */
+        .color-btn {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .color-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="h-screen bg-neutral-900 smooth-transition overflow-hidden">
+    
+    <!-- 主要容器 -->
+    <div class="h-full flex flex-col items-center justify-center relative">
+        
+        <!-- 中央標題 -->
+        <div class="text-center mb-8">
+            <h1 id="mainTitle" class="title-text font-bold text-white mb-4">
+                Pick a Vibe
+            </h1>
+            
+            <!-- 中央 Emoji Icon -->
+            <div id="emojiIcon" class="text-6xl mb-8">
+                ✨
+            </div>
+        </div>
+        
+        <!-- 顏色按鈕列 -->
+        <div class="flex space-x-6">
+            <!-- 紅色按鈕 -->
+            <button 
+                class="color-btn w-16 h-16 bg-red-500 rounded-full shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300"
+                data-color="red"
+                data-bg-class="bg-red-500"
+                data-title="Feel the Passion"
+                data-emoji="❤️"
+            ></button>
+            
+            <!-- 黃色按鈕 -->
+            <button 
+                class="color-btn w-16 h-16 bg-yellow-400 rounded-full shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-yellow-300"
+                data-color="yellow"
+                data-bg-class="bg-yellow-400"
+                data-title="Bright Energy"
+                data-emoji="💛"
+            ></button>
+            
+            <!-- 藍色按鈕 -->
+            <button 
+                class="color-btn w-16 h-16 bg-blue-500 rounded-full shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300"
+                data-color="blue"
+                data-bg-class="bg-blue-500"
+                data-title="Ocean Vibes"
+                data-emoji="💙"
+            ></button>
+            
+            <!-- 綠色按鈕 -->
+            <button 
+                class="color-btn w-16 h-16 bg-green-500 rounded-full shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300"
+                data-color="green"
+                data-bg-class="bg-green-500"
+                data-title="Nature Flow"
+                data-emoji="💚"
+            ></button>
+        </div>
+        
+        <!-- 重置按鈕 -->
+        <button 
+            id="resetBtn"
+            class="mt-8 px-6 py-2 bg-neutral-700 text-white rounded-full hover:bg-neutral-600 transition-colors duration-200 focus:outline-none focus:ring-4 focus:ring-neutral-500"
+        >
+            Reset
+        </button>
+    </div>
+
+    <script>
+        // GSAP 動畫設定
+        gsap.registerPlugin();
+        
+        // DOM 元素
+        const body = document.body;
+        const mainTitle = document.getElementById('mainTitle');
+        const emojiIcon = document.getElementById('emojiIcon');
+        const colorButtons = document.querySelectorAll('.color-btn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // 初始狀態
+        const initialState = {
+            bgClass: 'bg-neutral-900',
+            title: 'Pick a Vibe',
+            emoji: '✨'
+        };
+        
+        // 顏色變換函數
+        function changeColor(bgClass, title, emoji) {
+            // 創建 GSAP timeline
+            const tl = gsap.timeline();
+            
+            // 1. 背景顏色變換
+            // 移除所有背景類別
+            body.className = body.className.replace(/bg-\w+-\d+/g, '');
+            body.classList.add(bgClass);
+            
+            // 2. 文字 fade out → 改變 → fade in
+            tl.to(mainTitle, {
+                opacity: 0,
+                y: -20,
+                duration: 0.3,
+                ease: "power3.out"
+            })
+            .call(() => {
+                mainTitle.textContent = title;
+            })
+            .to(mainTitle, {
+                opacity: 1,
+                y: 0,
+                duration: 0.4,
+                ease: "power3.out"
+            });
+            
+            // 3. Emoji 動畫 (並行執行)
+            gsap.to(emojiIcon, {
+                scale: 1.3,
+                rotation: 360,
+                duration: 0.6,
+                ease: "power3.out",
+                yoyo: true,
+                repeat: 1,
+                onComplete: () => {
+                    emojiIcon.textContent = emoji;
+                }
+            });
+            
+            // 4. 按鈕點擊動畫
+            const clickedBtn = event.target;
+            gsap.to(clickedBtn, {
+                scale: 0.9,
+                duration: 0.1,
+                ease: "power3.out",
+                yoyo: true,
+                repeat: 1
+            });
+        }
+        
+        // 重置函數
+        function resetToInitial() {
+            // 背景重置
+            body.className = 'h-screen bg-neutral-900 smooth-transition overflow-hidden';
+            
+            // 創建重置 timeline
+            const tl = gsap.timeline();
+            
+            // 文字重置動畫
+            tl.to(mainTitle, {
+                opacity: 0,
+                y: -20,
+                duration: 0.3,
+                ease: "power3.out"
+            })
+            .call(() => {
+                mainTitle.textContent = initialState.title;
+            })
+            .to(mainTitle, {
+                opacity: 1,
+                y: 0,
+                duration: 0.4,
+                ease: "power3.out"
+            });
+            
+            // Emoji 重置動畫
+            gsap.to(emojiIcon, {
+                scale: 1.3,
+                rotation: -360,
+                duration: 0.6,
+                ease: "power3.out",
+                yoyo: true,
+                repeat: 1,
+                onComplete: () => {
+                    emojiIcon.textContent = initialState.emoji;
+                }
+            });
+        }
+        
+        // 為每個顏色按鈕添加事件監聽器
+        colorButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                const bgClass = this.dataset.bgClass;
+                const title = this.dataset.title;
+                const emoji = this.dataset.emoji;
+                
+                changeColor(bgClass, title, emoji);
+            });
+        });
+        
+        // 重置按鈕事件監聽器
+        resetBtn.addEventListener('click', resetToInitial);
+        
+        // 頁面載入動畫
+        gsap.fromTo(mainTitle, 
+            { opacity: 0, y: -50 },
+            { opacity: 1, y: 0, duration: 1, ease: "power3.out", delay: 0.2 }
+        );
+        
+        gsap.fromTo(emojiIcon,
+            { opacity: 0, scale: 0 },
+            { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out", delay: 0.5 }
+        );
+        
+        gsap.fromTo(colorButtons,
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power3.out", delay: 0.8, stagger: 0.1 }
+        );
+        
+        gsap.fromTo(resetBtn,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.5, ease: "power3.out", delay: 1.2 }
+        );
+        
+    </script>
+    
+</body>
+</html> 
